@@ -2,7 +2,7 @@
 
 Diabetic retinopathy screening and telemedicine demonstration prototype.
 
-- Live website: https://uditdev0523.github.io/drishti_AI/
+- Live website: https://uditdev0523.github.io/retina_AI/
 - Project overview and local setup: [SIH26038_DR_Screening/README.md](SIH26038_DR_Screening/README.md)
 - Frontend: `SIH26038_DR_Screening/frontend`
 

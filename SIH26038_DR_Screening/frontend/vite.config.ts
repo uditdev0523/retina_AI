@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  base: '/drishti_AI/',
+  base: '/retina_AI/',
   plugins: [react()],
   resolve: {
     alias: {
