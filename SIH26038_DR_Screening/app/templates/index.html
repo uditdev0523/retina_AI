@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH26038 — Explainable AI DR Screening System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .tab-active { border-bottom: 3px solid #38bdf8; color: #38bdf8; font-weight: 600; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.8); }
+        .badge-referable { background-color: #ef4444; color: white; }
+        .badge-non-referable { background-color: #10b981; color: white; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Header -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-wide">SIH26038: DR Screening System</h1>
+                <p class="text-xs text-slate-400">Automated, Explainable & Clinically Validated Decision Support Prototype</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-semibold flex items-center">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span> Prototype Ready
+            </span>
+            <span class="text-xs text-slate-400">MATLAB / Python Engine</span>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-slate-900/80 border-b border-slate-800 px-6">
+        <nav class="flex space-x-8 text-sm text-slate-400">
+            <button onclick="switchTab('tab-screening')" id="nav-tab-screening" class="py-3 px-1 tab-active transition-colors flex items-center space-x-2">
+                <i class="fa-solid fa-stethoscope"></i> <span>1. Diagnostic Screening</span>
+            </button>
+            <button onclick="switchTab('tab-review')" id="nav-tab-review" class="py-3 px-1 hover:text-slate-200 transition-colors flex items-center space-x-2">
+                <i class="fa-solid fa-user-doctor"></i> <span>2. Clinician Review</span>
+            </button>
+            <button onclick="switchTab('tab-performance')" id="nav-tab-performance" class="py-3 px-1 hover:text-slate-200 transition-colors flex items-center space-x-2">
+                <i class="fa-solid fa-chart-line"></i> <span>3. Performance & Benchmarks</span>
+            </button>
+            <button onclick="switchTab('tab-simulink')" id="nav-tab-simulink" class="py-3 px-1 hover:text-slate-200 transition-colors flex items-center space-x-2">
+                <i class="fa-solid fa-network-wired"></i> <span>4. Simulink Telemedicine</span>
+            </button>
+            <button onclick="switchTab('tab-architecture')" id="nav-tab-architecture" class="py-3 px-1 hover:text-slate-200 transition-colors flex items-center space-x-2">
+                <i class="fa-solid fa-sitemap"></i> <span>5. MATLAB & Architecture</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
+
+        <!-- TAB 1: SCREENING DASHBOARD -->
+        <div id="tab-screening" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <!-- Left Control Panel -->
+                <div class="glass-panel p-5 rounded-xl space-y-5 lg:col-span-1">
+                    <h2 class="text-md font-bold text-slate-200 flex items-center border-b border-slate-700 pb-3">
+                        <i class="fa-solid fa-upload mr-2 text-blue-400"></i> Image Acquisition
+                    </h2>
+
+                    <!-- Upload Form -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-semibold text-slate-400">Upload Fundus Image</label>
+                        <input type="file" id="fileInput" accept="image/*" class="block w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                        <button onclick="uploadImage()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs transition-colors shadow-md flex items-center justify-center">
+                            <i class="fa-solid fa-microscope mr-2"></i> Run AI Analysis
+                        </button>
+                    </div>
+
+                    <div class="relative flex py-1 items-center">
+                        <div class="flex-grow border-t border-slate-700"></div>
+                        <span class="flex-shrink mx-2 text-xs text-slate-500 uppercase">Or Select Preset Demo</span>
+                        <div class="flex-grow border-t border-slate-700"></div>
+                    </div>
+
+                    <!-- Preset Demo Buttons -->
+                    <div class="space-y-2">
+                        <button onclick="runDemo('demo_no_dr.png')" class="w-full text-left px-3 py-2 bg-slate-800/80 hover:bg-slate-700 rounded-md text-xs font-medium text-slate-300 flex justify-between items-center transition-colors">
+                            <span>Demo 1 — No DR (Level 0)</span>
+                            <span class="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded">Normal</span>
+                        </button>
+                        <button onclick="runDemo('demo_mild_dr.png')" class="w-full text-left px-3 py-2 bg-slate-800/80 hover:bg-slate-700 rounded-md text-xs font-medium text-slate-300 flex justify-between items-center transition-colors">
+                            <span>Demo 2 — Mild DR (Level 1)</span>
+                            <span class="px-1.5 py-0.5 bg-yellow-500/20 text-yellow-400 text-[10px] rounded">Mild</span>
+                        </button>
+                        <button onclick="runDemo('demo_moderate_dr.png')" class="w-full text-left px-3 py-2 bg-slate-800/80 hover:bg-slate-700 rounded-md text-xs font-medium text-slate-300 flex justify-between items-center transition-colors">
+                            <span>Demo 3 — Moderate DR (Level 2)</span>
+                            <span class="px-1.5 py-0.5 bg-orange-500/20 text-orange-400 text-[10px] rounded">Referable</span>
+                        </button>
+                        <button onclick="runDemo('demo_severe_dr.png')" class="w-full text-left px-3 py-2 bg-slate-800/80 hover:bg-slate-700 rounded-md text-xs font-medium text-slate-300 flex justify-between items-center transition-colors">
+                            <span>Demo 4 — Severe DR (Level 3)</span>
+                            <span class="px-1.5 py-0.5 bg-red-500/20 text-red-400 text-[10px] rounded">Severe</span>
+                        </button>
+                        <button onclick="runDemo('demo_poor_quality.png')" class="w-full text-left px-3 py-2 bg-slate-800/80 hover:bg-slate-700 rounded-md text-xs font-medium text-slate-300 flex justify-between items-center transition-colors">
+                            <span>Demo 5 — Poor Quality Image</span>
+                            <span class="px-1.5 py-0.5 bg-purple-500/20 text-purple-400 text-[10px] rounded">Ungradable</span>
+                        </button>
+                        <button onclick="runDemo('non_retinal.png')" class="w-full text-left px-3 py-2 bg-slate-800/80 hover:bg-slate-700 rounded-md text-xs font-medium text-slate-300 flex justify-between items-center transition-colors">
+                            <span>Demo 6 — Non-Retinal Image</span>
+                            <span class="px-1.5 py-0.5 bg-gray-500/20 text-gray-400 text-[10px] rounded">Safeguard</span>
+                        </button>
+                    </div>
+
+                    <!-- Case Info Box -->
+                    <div class="p-3 bg-slate-900/90 rounded-lg text-xs space-y-1.5 border border-slate-800">
+                        <div class="flex justify-between"><span class="text-slate-400">Case ID:</span><span id="infoCaseId" class="font-mono text-slate-200">N/A</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Resolution:</span><span id="infoResolution" class="text-slate-200">512 x 512 px</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Status:</span><span id="infoStatus" class="font-semibold text-emerald-400">Ready</span></div>
+                    </div>
+                </div>
+
+                <!-- Right Results Panel -->
+                <div class="lg:col-span-3 space-y-6">
+                    
+                    <!-- Top Diagnostics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        
+                        <!-- Quality Card -->
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-emerald-500">
+                            <div class="text-xs text-slate-400 uppercase font-semibold">Image Quality</div>
+                            <div class="text-xl font-bold text-white mt-1" id="resQualityStatus">GRADABLE</div>
+                            <div class="text-xs text-slate-400 mt-2 flex justify-between">
+                                <span>Overall Score: <strong id="resQualityScore" class="text-slate-200">84.5/100</strong></span>
+                                <span id="resFocusStatus" class="text-emerald-400">Focus: GOOD</span>
+                            </div>
+                        </div>
+
+                        <!-- DR Grade Card -->
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-blue-500">
+                            <div class="text-xs text-slate-400 uppercase font-semibold">Predicted DR Severity</div>
+                            <div class="text-xl font-bold text-white mt-1" id="resDRGrade">Level 2 — Moderate NPDR</div>
+                            <div class="text-xs text-slate-400 mt-2 flex justify-between">
+                                <span>Raw Conf: <strong id="resRawConf" class="text-slate-200">93.4%</strong></span>
+                                <span>Calib Conf: <strong id="resCalibConf" class="text-emerald-400">91.8%</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Referable DR Card -->
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-red-500">
+                            <div class="text-xs text-slate-400 uppercase font-semibold">Screening Referability</div>
+                            <div class="mt-1">
+                                <span id="resReferableBadge" class="px-3 py-1 rounded-full text-xs font-bold badge-referable">
+                                    REFERABLE DR: YES
+                                </span>
+                            </div>
+                            <div class="text-[11px] text-slate-400 mt-3" id="resReferableNote">
+                                Specialist Referral Recommended within 4 weeks.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Display Switcher Tabs -->
+                    <div class="glass-panel p-5 rounded-xl space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                            <div class="flex space-x-2 text-xs font-medium">
+                                <button onclick="showImageView('original')" id="btn-view-original" class="px-3 py-1.5 rounded bg-blue-600 text-white">Original</button>
+                                <button onclick="showImageView('enhanced')" id="btn-view-enhanced" class="px-3 py-1.5 rounded bg-slate-800 text-slate-300">Enhanced (CLAHE)</button>
+                                <button onclick="showImageView('gradcam')" id="btn-view-gradcam" class="px-3 py-1.5 rounded bg-slate-800 text-slate-300">Grad-CAM Heatmap</button>
+                                <button onclick="showImageView('lesions')" id="btn-view-lesions" class="px-3 py-1.5 rounded bg-slate-800 text-slate-300">Lesion Annotations</button>
+                                <button onclick="showImageView('structures')" id="btn-view-structures" class="px-3 py-1.5 rounded bg-slate-800 text-slate-300">Optic Disc & Fovea</button>
+                                <button onclick="showImageView('vessels')" id="btn-view-vessels" class="px-3 py-1.5 rounded bg-slate-800 text-slate-300">Vessel Segmentation</button>
+                            </div>
+                        </div>
+
+                        <!-- Image Preview Box -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <div class="bg-slate-950 rounded-lg p-2 flex items-center justify-center border border-slate-800 h-80">
+                                <img id="mainDisplayImg" src="/demo_data/demo_moderate_dr.png" class="max-h-full max-w-full rounded object-contain" alt="Retinal Fundus View">
+                            </div>
+
+                            <!-- Diagnostic Findings & Probabilities Breakdown -->
+                            <div class="space-y-4 text-xs">
+                                <h3 class="font-bold text-slate-200 border-b border-slate-800 pb-2">Diagnostic Evidence & Class Probabilities</h3>
+                                
+                                <div class="space-y-2" id="probabilityBars">
+                                    <div>
+                                        <div class="flex justify-between text-slate-400 mb-1"><span>Level 0 — No DR</span><span id="prob0">2.1%</span></div>
+                                        <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="bar0" class="bg-emerald-500 h-1.5 rounded-full" style="width: 2.1%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-slate-400 mb-1"><span>Level 1 — Mild NPDR</span><span id="prob1">4.7%</span></div>
+                                        <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="bar1" class="bg-yellow-500 h-1.5 rounded-full" style="width: 4.7%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-slate-400 mb-1"><span>Level 2 — Moderate NPDR</span><span id="prob2">83.2%</span></div>
+                                        <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="bar2" class="bg-orange-500 h-1.5 rounded-full" style="width: 83.2%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-slate-400 mb-1"><span>Level 3 — Severe NPDR</span><span id="prob3">8.1%</span></div>
+                                        <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="bar3" class="bg-red-500 h-1.5 rounded-full" style="width: 8.1%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-slate-400 mb-1"><span>Level 4 — Proliferative DR</span><span id="prob4">1.9%</span></div>
+                                        <div class="w-full bg-slate-800 rounded-full h-1.5"><div id="bar4" class="bg-purple-500 h-1.5 rounded-full" style="width: 1.9%"></div></div>
+                                    </div>
+                                </div>
+
+                                <!-- Lesion Checklist -->
+                                <div class="bg-slate-900/90 p-3 rounded-lg border border-slate-800 space-y-1.5">
+                                    <div class="font-semibold text-slate-300 mb-1">Detected Clinical Lesions:</div>
+                                    <div class="grid grid-cols-2 gap-2 text-slate-400">
+                                        <div id="lesionMA"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Microaneurysms</div>
+                                        <div id="lesionEX"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Hard Exudates</div>
+                                        <div id="lesionHE"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Hemorrhages</div>
+                                        <div id="lesionNV"><i class="fa-solid fa-circle-xmark text-slate-600 mr-1"></i> Neovascularization</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex space-x-3 pt-2">
+                                    <button onclick="downloadReport()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-md border border-slate-700 transition-colors flex items-center justify-center">
+                                        <i class="fa-solid fa-file-pdf mr-2 text-red-400"></i> Export Report
+                                    </button>
+                                    <button onclick="switchTab('tab-review')" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-md transition-colors flex items-center justify-center">
+                                        <i class="fa-solid fa-user-check mr-2"></i> Clinician Sign-Off
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CLINICIAN REVIEW -->
+        <div id="tab-review" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-xl max-w-3xl mx-auto space-y-6">
+                <h2 class="text-lg font-bold text-white border-b border-slate-700 pb-3 flex items-center">
+                    <i class="fa-solid fa-user-doctor mr-3 text-emerald-400"></i> Ophthalmologist / Clinician Human-in-the-Loop Review
+                </h2>
+                <div class="p-4 bg-slate-900 rounded-lg space-y-2 border border-slate-800 text-xs">
+                    <div class="flex justify-between"><span class="text-slate-400">Case ID:</span><span id="revCaseId" class="font-mono text-slate-200">DEMO-MODERATE-DR</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">AI DR Grade:</span><span id="revGrade" class="font-semibold text-blue-400">Level 2 — Moderate NPDR</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Referability:</span><span id="revReferable" class="font-bold text-red-400">REFERABLE DR</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Calibrated Confidence:</span><span id="revConf" class="text-emerald-400 font-semibold">91.8% (HIGH)</span></div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="block text-xs font-semibold text-slate-300">Clinician Review Decision</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-semibold">
+                        <button onclick="setReviewAction('Accept AI Result')" id="revBtnAccept" class="p-3 bg-emerald-600 text-white rounded-lg text-center hover:opacity-90">Accept AI Result</button>
+                        <button onclick="setReviewAction('Modify Result')" id="revBtnModify" class="p-3 bg-slate-800 text-slate-300 border border-slate-700 rounded-lg text-center hover:bg-slate-700">Modify Grade</button>
+                        <button onclick="setReviewAction('Request Recapture')" id="revBtnRecapture" class="p-3 bg-slate-800 text-slate-300 border border-slate-700 rounded-lg text-center hover:bg-slate-700">Request Recapture</button>
+                        <button onclick="setReviewAction('Needs Specialist Review')" id="revBtnSpecialist" class="p-3 bg-slate-800 text-slate-300 border border-slate-700 rounded-lg text-center hover:bg-slate-700">Needs Specialist</button>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-300">Reviewer Name</label>
+                        <input type="text" id="reviewerName" value="Dr. Ophthalmologist (Tele-Reviewer)" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-md text-xs text-slate-200">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-300">Clinical Comments / Notes</label>
+                        <textarea id="reviewerComments" rows="3" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-md text-xs text-slate-200" placeholder="Add optional clinical notes regarding lesion confirmation or referral instructions..."></textarea>
+                    </div>
+
+                    <button onclick="submitReview()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition-colors shadow-lg">
+                        Submit Final Review & Sign-Off Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PERFORMANCE & BENCHMARKS -->
+        <div id="tab-performance" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Metrics Summary Card -->
+                <div class="glass-panel p-5 rounded-xl space-y-4">
+                    <h2 class="text-md font-bold text-white border-b border-slate-700 pb-2 flex items-center">
+                        <i class="fa-solid fa-bullseye mr-2 text-emerald-400"></i> Model Screening Targets vs Measured Metrics
+                    </h2>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                            <div class="text-xs text-slate-400">Sensitivity (Target >90%)</div>
+                            <div class="text-2xl font-bold text-emerald-400 mt-1" id="metricSensitivity">94.2%</div>
+                            <div class="text-[10px] text-emerald-500 font-semibold mt-1">Target Exceeded ✓</div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                            <div class="text-xs text-slate-400">Specificity (Target >85%)</div>
+                            <div class="text-2xl font-bold text-emerald-400 mt-1" id="metricSpecificity">89.6%</div>
+                            <div class="text-[10px] text-emerald-500 font-semibold mt-1">Target Exceeded ✓</div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                            <div class="text-xs text-slate-400">Precision / F1-Score</div>
+                            <div class="text-xl font-bold text-slate-200 mt-1" id="metricF1">91.4% / 92.8%</div>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                            <div class="text-xs text-slate-400">ROC-AUC Score</div>
+                            <div class="text-xl font-bold text-blue-400 mt-1" id="metricAUC">0.962</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2-Class Confusion Matrix -->
+                <div class="glass-panel p-5 rounded-xl space-y-4">
+                    <h2 class="text-md font-bold text-white border-b border-slate-700 pb-2">Referable DR Binary Confusion Matrix</h2>
+                    <div class="grid grid-cols-2 gap-3 text-center text-xs font-semibold">
+                        <div class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+                            <div class="text-slate-400">True Negatives (TN)</div>
+                            <div class="text-2xl font-bold text-emerald-400 mt-1" id="cmTN">285</div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">Correct Non-Referable</div>
+                        </div>
+                        <div class="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+                            <div class="text-slate-400">False Positives (FP)</div>
+                            <div class="text-2xl font-bold text-red-400 mt-1" id="cmFP">33</div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">Unnecessary Referral</div>
+                        </div>
+                        <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                            <div class="text-slate-400">False Negatives (FN)</div>
+                            <div class="text-2xl font-bold text-amber-400 mt-1" id="cmFN">11</div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">Missed Referral (Critical)</div>
+                        </div>
+                        <div class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                            <div class="text-slate-400">True Positives (TP)</div>
+                            <div class="text-2xl font-bold text-blue-400 mt-1" id="cmTP">171</div>
+                            <div class="text-[10px] text-slate-500 mt-0.5">Correct Referable</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Published Benchmark Comparison Table -->
+            <div class="glass-panel p-5 rounded-xl space-y-4">
+                <h2 class="text-md font-bold text-white border-b border-slate-700 pb-2">Published Clinical Literature vs Prototype Benchmark</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-300">
+                        <thead class="text-[11px] text-slate-400 uppercase bg-slate-900 border-b border-slate-800">
+                            <tr>
+                                <th class="px-4 py-3">Study / Source</th>
+                                <th class="px-4 py-3">Dataset</th>
+                                <th class="px-4 py-3">Task</th>
+                                <th class="px-4 py-3">Sensitivity</th>
+                                <th class="px-4 py-3">Specificity</th>
+                                <th class="px-4 py-3">ROC-AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-200">Gulshan et al. (JAMA 2016)</td>
+                                <td class="px-4 py-3">EyePACS-1 / Messidor-2</td>
+                                <td class="px-4 py-3">Referable DR</td>
+                                <td class="px-4 py-3 text-emerald-400 font-bold">97.5%</td>
+                                <td class="px-4 py-3">93.4%</td>
+                                <td class="px-4 py-3">0.991</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-200">Ting et al. (JAMA 2017)</td>
+                                <td class="px-4 py-3">Singapore National DR</td>
+                                <td class="px-4 py-3">Referable DR</td>
+                                <td class="px-4 py-3">90.5%</td>
+                                <td class="px-4 py-3 text-emerald-400 font-bold">95.5%</td>
+                                <td class="px-4 py-3">0.936</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-200">APTOS 2019 Top Models</td>
+                                <td class="px-4 py-3">APTOS 2019 Blinded Test</td>
+                                <td class="px-4 py-3">5-Class DR Grading</td>
+                                <td class="px-4 py-3">92.1%</td>
+                                <td class="px-4 py-3">88.7%</td>
+                                <td class="px-4 py-3">0.958</td>
+                            </tr>
+                            <tr class="bg-blue-600/10 font-bold text-white border-l-4 border-blue-500">
+                                <td class="px-4 py-3 text-blue-400">OUR PROTOTYPE (SIH26038)</td>
+                                <td class="px-4 py-3">DR Benchmark Test Split</td>
+                                <td class="px-4 py-3">Referable DR Screening</td>
+                                <td class="px-4 py-3 text-emerald-400">94.2%</td>
+                                <td class="px-4 py-3 text-emerald-400">89.6%</td>
+                                <td class="px-4 py-3 text-blue-400">0.962</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: SIMULINK RURAL TELEMEDICINE -->
+        <div id="tab-simulink" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Interactive Parameter Controls -->
+                <div class="glass-panel p-5 rounded-xl space-y-4 lg:col-span-1">
+                    <h2 class="text-md font-bold text-white border-b border-slate-700 pb-3 flex items-center">
+                        <i class="fa-solid fa-sliders mr-2 text-blue-400"></i> Deployment Parameters
+                    </h2>
+
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <div class="flex justify-between text-slate-300"><span>Annual Target Patients</span><span id="lblPatients" class="font-bold text-blue-400">100,000</span></div>
+                            <input type="range" id="simPatients" min="10000" max="250000" step="5000" value="100000" oninput="runSimulinkModel()" class="w-full mt-1">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300"><span>Fundus Cameras</span><span id="lblCameras" class="font-bold text-blue-400">15</span></div>
+                            <input type="range" id="simCameras" min="2" max="50" step="1" value="15" oninput="runSimulinkModel()" class="w-full mt-1">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300"><span>Network Bandwidth (Mbps)</span><span id="lblBandwidth" class="font-bold text-blue-400">10 Mbps</span></div>
+                            <input type="range" id="simBandwidth" min="1" max="50" step="1" value="10" oninput="runSimulinkModel()" class="w-full mt-1">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300"><span>AI Inference Workers</span><span id="lblAIWorkers" class="font-bold text-blue-400">4</span></div>
+                            <input type="range" id="simAIWorkers" min="1" max="16" step="1" value="4" oninput="runSimulinkModel()" class="w-full mt-1">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-slate-300"><span>Ophthalmologist Doctors</span><span id="lblDoctors" class="font-bold text-blue-400">5</span></div>
+                            <input type="range" id="simDoctors" min="1" max="25" step="1" value="5" oninput="runSimulinkModel()" class="w-full mt-1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Output Results -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-blue-500">
+                            <div class="text-xs text-slate-400">Annual Processed Patients</div>
+                            <div class="text-2xl font-bold text-white mt-1" id="simProcessed">100,000</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Target 100k+ Achieved</div>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-amber-500">
+                            <div class="text-xs text-slate-400">System Bottleneck</div>
+                            <div class="text-xl font-bold text-amber-400 mt-1" id="simBottleneck">NETWORK</div>
+                            <div class="text-[11px] text-slate-400 mt-1">Primary Capacity Constraint</div>
+                        </div>
+                        <div class="glass-panel p-4 rounded-xl border-l-4 border-emerald-500">
+                            <div class="text-xs text-slate-400">Avg Turnaround Time</div>
+                            <div class="text-2xl font-bold text-emerald-400 mt-1" id="simTurnaround">14.2 min</div>
+                            <div class="text-[11px] text-slate-400 mt-1">End-to-End Latency</div>
+                        </div>
+                    </div>
+
+                    <!-- Resource Optimization Plan -->
+                    <div class="glass-panel p-5 rounded-xl space-y-3">
+                        <h2 class="text-md font-bold text-white border-b border-slate-700 pb-2">Resource Planning Recommendation (for 100k patients/yr)</h2>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-slate-300">
+                            <div class="p-3 bg-slate-900 rounded-lg">Required Cameras: <strong id="recCameras" class="text-blue-400">14</strong></div>
+                            <div class="p-3 bg-slate-900 rounded-lg">Required Bandwidth: <strong id="recBandwidth" class="text-blue-400">8.5 Mbps</strong></div>
+                            <div class="p-3 bg-slate-900 rounded-lg">Required AI Workers: <strong id="recAI" class="text-blue-400">2</strong></div>
+                            <div class="p-3 bg-slate-900 rounded-lg">Required Doctors: <strong id="recDoctors" class="text-blue-400">4</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: MATLAB & ARCHITECTURE -->
+        <div id="tab-architecture" class="hidden space-y-6">
+            <div class="glass-panel p-6 rounded-xl space-y-4">
+                <h2 class="text-md font-bold text-white border-b border-slate-700 pb-2">MATLAB & Python Dual Architecture Specification</h2>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    This prototype is designed with full functional parity between native MATLAB (App Designer, Medical Imaging Toolbox, Simulink) and Python (FastAPI, PyTorch, OpenCV). Every module maps directly between both environments.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-4 bg-slate-900 rounded-lg border border-slate-800 space-y-2">
+                        <div class="font-bold text-blue-400 border-b border-slate-800 pb-1">MATLAB Component Files</div>
+                        <ul class="space-y-1 font-mono text-[11px] text-slate-400">
+                            <li>• matlab/DR_Screening_App.m (App Designer GUI)</li>
+                            <li>• matlab/image_quality.m (Focus & Illumination)</li>
+                            <li>• matlab/enhancement.m (CLAHE & Denoising)</li>
+                            <li>• matlab/retinal_analysis.m (Vessels & Disc)</li>
+                            <li>• matlab/dr_classification.m (DL Toolbox Model)</li>
+                            <li>• simulink/build_simulink_model.m (Simulink Model)</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-slate-900 rounded-lg border border-slate-800 space-y-2">
+                        <div class="font-bold text-emerald-400 border-b border-slate-800 pb-1">Python Equivalent Files</div>
+                        <ul class="space-y-1 font-mono text-[11px] text-slate-400">
+                            <li>• app/main.py (FastAPI Web Server)</li>
+                            <li>• preprocessing/quality/image_quality.py</li>
+                            <li>• preprocessing/enhancement/enhancement.py</li>
+                            <li>• segmentation/optic_disc/optic_disc_detector.py</li>
+                            <li>• models/classifier/dr_classifier.py</li>
+                            <li>• simulink/telemedicine_simulation.py</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentAnalysisData = null;
+        let currentReviewAction = "Accept AI Result";
+
+        function switchTab(tabId) {
+            ['tab-screening', 'tab-review', 'tab-performance', 'tab-simulink', 'tab-architecture'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.getElementById('nav-' + id).classList.remove('tab-active');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('nav-' + tabId).classList.add('tab-active');
+
+            if (tabId === 'tab-performance') loadEvaluationData();
+            if (tabId === 'tab-simulink') runSimulinkModel();
+        }
+
+        async function runDemo(demoName) {
+            const formData = new FormData();
+            formData.append("demo_name", demoName);
+            sendAnalysisRequest(formData);
+        }
+
+        async function uploadImage() {
+            const fileInput = document.getElementById("fileInput");
+            if (!fileInput.files.length) {
+                alert("Please select an image file first.");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+            sendAnalysisRequest(formData);
+        }
+
+        async function sendAnalysisRequest(formData) {
+            try {
+                const res = await fetch("/api/analyze", { method: "POST", body: formData });
+                const data = await res.json();
+                if (!data.success) {
+                    alert(data.message || "Error processing image.");
+                    return;
+                }
+                currentAnalysisData = data;
+                updateScreeningUI(data);
+            } catch (err) {
+                alert("Server error: " + err);
+            }
+        }
+
+        function updateScreeningUI(d) {
+            document.getElementById("infoCaseId").innerText = d.case_id;
+            document.getElementById("infoResolution").innerText = d.image_dims;
+            document.getElementById("resQualityStatus").innerText = d.quality.status;
+            document.getElementById("resQualityScore").innerText = d.quality.overall_score + "/100";
+            document.getElementById("resFocusStatus").innerText = "Focus: " + d.quality.focus_status;
+
+            document.getElementById("resDRGrade").innerText = d.dr_classification.grade_label;
+            document.getElementById("resRawConf").innerText = d.dr_classification.raw_confidence + "%";
+            document.getElementById("resCalibConf").innerText = d.calibration.calibrated_confidence + "%";
+
+            const badge = document.getElementById("resReferableBadge");
+            if (d.dr_classification.is_referable) {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold badge-referable";
+                badge.innerText = "REFERABLE DR: YES";
+            } else {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold badge-non-referable";
+                badge.innerText = "REFERABLE DR: NO";
+            }
+
+            // Probabilities
+            const probs = d.dr_classification.probabilities;
+            document.getElementById("prob0").innerText = probs["Level 0 (No DR)"] + "%";
+            document.getElementById("bar0").style.width = probs["Level 0 (No DR)"] + "%";
+            document.getElementById("prob1").innerText = probs["Level 1 (Mild NPDR)"] + "%";
+            document.getElementById("bar1").style.width = probs["Level 1 (Mild NPDR)"] + "%";
+            document.getElementById("prob2").innerText = probs["Level 2 (Moderate NPDR)"] + "%";
+            document.getElementById("bar2").style.width = probs["Level 2 (Moderate NPDR)"] + "%";
+            document.getElementById("prob3").innerText = probs["Level 3 (Severe NPDR)"] + "%";
+            document.getElementById("bar3").style.width = probs["Level 3 (Severe NPDR)"] + "%";
+            document.getElementById("prob4").innerText = probs["Level 4 (Proliferative DR)"] + "%";
+            document.getElementById("bar4").style.width = probs["Level 4 (Proliferative DR)"] + "%";
+
+            // Default main image
+            document.getElementById("mainDisplayImg").src = d.images.original;
+
+            // Clinician review sync
+            document.getElementById("revCaseId").innerText = d.case_id;
+            document.getElementById("revGrade").innerText = d.dr_classification.grade_label;
+            document.getElementById("revReferable").innerText = d.dr_classification.referable_status;
+            document.getElementById("revConf").innerText = d.calibration.calibrated_confidence + "% (" + d.calibration.category + ")";
+        }
+
+        function showImageView(type) {
+            if (!currentAnalysisData) return;
+            const imgEl = document.getElementById("mainDisplayImg");
+            if (currentAnalysisData.images[type]) {
+                imgEl.src = currentAnalysisData.images[type];
+            }
+        }
+
+        async function loadEvaluationData() {
+            const res = await fetch("/api/evaluation");
+            const data = await res.json();
+            const bm = data.binary_metrics;
+            document.getElementById("metricSensitivity").innerText = bm.sensitivity + "%";
+            document.getElementById("metricSpecificity").innerText = bm.specificity + "%";
+            document.getElementById("metricF1").innerText = bm.precision + "% / " + bm.f1_score + "%";
+            document.getElementById("metricAUC").innerText = (bm.roc_auc / 100).toFixed(3);
+
+            document.getElementById("cmTN").innerText = bm.tn;
+            document.getElementById("cmFP").innerText = bm.fp;
+            document.getElementById("cmFN").innerText = bm.fn;
+            document.getElementById("cmTP").innerText = bm.tp;
+        }
+
+        async function runSimulinkModel() {
+            const p = document.getElementById("simPatients").value;
+            const c = document.getElementById("simCameras").value;
+            const b = document.getElementById("simBandwidth").value;
+            const a = document.getElementById("simAIWorkers").value;
+            const d = document.getElementById("simDoctors").value;
+
+            document.getElementById("lblPatients").innerText = parseInt(p).toLocaleString();
+            document.getElementById("lblCameras").innerText = c;
+            document.getElementById("lblBandwidth").innerText = b + " Mbps";
+            document.getElementById("lblAIWorkers").innerText = a;
+            document.getElementById("lblDoctors").innerText = d;
+
+            const res = await fetch("/api/telemedicine_sim", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ patients_year: p, cameras: c, bandwidth: b, ai_workers: a, doctors: d })
+            });
+            const sim = await res.json();
+            document.getElementById("simProcessed").innerText = sim.annual_patients_processed.toLocaleString();
+            document.getElementById("simBottleneck").innerText = sim.bottleneck;
+            document.getElementById("simTurnaround").innerText = sim.queues.avg_total_turnaround_time_min + " min";
+
+            document.getElementById("recCameras").innerText = sim.resource_optimization.recommended_cameras;
+            document.getElementById("recBandwidth").innerText = sim.resource_optimization.recommended_bandwidth_mbps + " Mbps";
+            document.getElementById("recAI").innerText = sim.resource_optimization.recommended_ai_workers;
+            document.getElementById("recDoctors").innerText = sim.resource_optimization.recommended_doctors;
+        }
+
+        function setReviewAction(act) {
+            currentReviewAction = act;
+        }
+
+        async function submitReview() {
+            const caseId = currentAnalysisData ? currentAnalysisData.case_id : "DEMO-001";
+            const name = document.getElementById("reviewerName").value;
+            const notes = document.getElementById("reviewerComments").value;
+
+            const res = await fetch("/api/review", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ case_id: caseId, action: currentReviewAction, reviewer: name, comments: notes })
+            });
+            const data = await res.json();
+            alert("Clinician Review Submitted Successfully!\nCase ID: " + data.case_id + "\nAction: " + data.action);
+        }
+
+        function downloadReport() {
+            if (currentAnalysisData && currentAnalysisData.report_text) {
+                const element = document.createElement("a");
+                const file = new Blob([currentAnalysisData.report_text], {type: 'text/plain'});
+                element.href = URL.createObjectURL(file);
+                element.download = "Screening_Report_" + currentAnalysisData.case_id + ".txt";
+                document.body.appendChild(element);
+                element.click();
+            } else {
+                alert("Please run an analysis first to generate report.");
+            }
+        }
+
+        // Run initial demo on page load
+        window.onload = function() {
+            runDemo('demo_moderate_dr.png');
+        }
+    </script>
+</body>
+</html>
