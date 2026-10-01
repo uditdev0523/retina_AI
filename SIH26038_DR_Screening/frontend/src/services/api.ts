@@ -6,19 +6,21 @@ const API_BASE_URL = 'http://127.0.0.1:8000/api';
 export async function analyzeFundusImage(file?: File, demoName?: string): Promise<ScreeningCase> {
   // If demo case selected, prioritize reliable instant or backend demo response
   if (demoName) {
-    try {
-      const formData = new FormData();
-      formData.append('demo_name', demoName);
-      const res = await fetch(`${API_BASE_URL}/analyze`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.case_id) return data;
+    if (import.meta.env.DEV) {
+      try {
+        const formData = new FormData();
+        formData.append('demo_name', demoName);
+        const res = await fetch(`${API_BASE_URL}/analyze`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.case_id) return data;
+        }
+      } catch {
+        // Backend unavailable, fallback to local mock data engine
       }
-    } catch {
-      // Backend unavailable, fallback to local mock data engine
     }
     // Local mock data engine
     const demoIdMap: Record<string, string> = {
@@ -40,19 +42,21 @@ export async function analyzeFundusImage(file?: File, demoName?: string): Promis
 
   // File uploaded
   if (file) {
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch(`${API_BASE_URL}/analyze`, {
-        method: 'POST',
-        body: formData,
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.case_id) return data;
+    if (import.meta.env.DEV) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch(`${API_BASE_URL}/analyze`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.case_id) return data;
+        }
+      } catch {
+        // Backend offline, synthesize custom uploaded case result
       }
-    } catch {
-      // Backend offline, synthesize custom uploaded case result
     }
 
     // Client-side mock AI pipeline for uploaded custom image
@@ -143,17 +147,19 @@ export async function submitClinicianReview(params: {
   reviewer: string;
   comments: string;
 }): Promise<{ success: boolean; message: string; review: ReviewAction }> {
-  try {
-    const response = await fetch(`${API_BASE_URL}/review`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    });
-    if (response.ok) {
-      return await response.json();
+  if (import.meta.env.DEV) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(params),
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch {
+      // Offline mode mock response
     }
-  } catch {
-    // Offline mode mock response
   }
 
   return {
