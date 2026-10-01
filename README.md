@@ -1,4 +1,4 @@
-# Drishti AI
+# Retnia AI
 
 Diabetic retinopathy screening and telemedicine demonstration prototype.
 
