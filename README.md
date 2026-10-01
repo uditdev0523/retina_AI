@@ -1,4 +1,4 @@
-# Retnia AI
+# Retina AI
 
 Diabetic retinopathy screening and telemedicine demonstration prototype.
 
