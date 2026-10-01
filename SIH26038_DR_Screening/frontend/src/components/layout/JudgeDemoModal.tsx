@@ -28,7 +28,7 @@ export const JudgeDemoModal: React.FC<JudgeDemoModalProps> = ({ isOpen, onClose 
   const demoSteps = [
     {
       title: "1. Problem & Context",
-      subtitle: "Diabetic Retinopathy in Rural India (SIH26038)",
+      subtitle: "Diabetic Retinopathy in Rural India",
       desc: "77+ million diabetic patients in India face a shortage of retinal specialists in rural areas. Late detection causes irreversible blindness. Our solution automates early screening at PHC sub-centers.",
       actionLabel: "View Overview",
       actionPath: "/"
@@ -141,7 +141,7 @@ export const JudgeDemoModal: React.FC<JudgeDemoModalProps> = ({ isOpen, onClose 
             <Sparkles className="w-5 h-5 text-amber-200 animate-spin" style={{ animationDuration: '4s' }} />
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-bold text-base text-white">SIH Judge Guided Demonstration Mode</h3>
+                <h3 className="font-bold text-base text-white">Guided Demonstration Mode</h3>
                 <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-full uppercase">
                   Step {currentStep + 1} of {demoSteps.length}
                 </span>

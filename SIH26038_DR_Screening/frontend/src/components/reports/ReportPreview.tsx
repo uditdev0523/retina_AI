@@ -51,7 +51,7 @@ export const ReportPreview: React.FC<ReportPreviewProps> = ({ screeningCase, onP
             </div>
             <div>
               <h1 className="text-2xl font-black text-slate-900 tracking-tight">RetinaAI Tele-Screening Report</h1>
-              <p className="text-xs text-slate-500 font-medium">Smart India Hackathon Prototype — SIH26038</p>
+              <p className="text-xs text-slate-500 font-medium">Clinical Screening Prototype</p>
             </div>
           </div>
           <div className="text-right">
@@ -199,7 +199,7 @@ export const ReportPreview: React.FC<ReportPreviewProps> = ({ screeningCase, onP
 
         {/* Legal Disclaimer Footer */}
         <div className="border-t border-slate-200 pt-4 text-[10px] text-slate-400 text-center leading-relaxed">
-          This report is produced by an AI-assisted diabetic retinopathy screening prototype (SIH26038). All AI-generated classifications require human clinical review prior to definitive medical decision making. Demonstration data — not a clinically certified medical device.
+          This report is produced by an AI-assisted diabetic retinopathy screening prototype. All AI-generated classifications require human clinical review prior to definitive medical decision making. Demonstration data — not a clinically certified medical device.
         </div>
 
       </div>

@@ -163,7 +163,7 @@ export const ScreeningPage: React.FC = () => {
           <div>
             <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-500" />
-              Pre-Loaded SIH Demo Test Cases
+              Pre-Loaded Demo Test Cases
             </h3>
             <p className="text-xs text-slate-500">Select any case below to demonstrate end-to-end AI assessment workflow</p>
           </div>

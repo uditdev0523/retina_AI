@@ -110,7 +110,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="p-3.5 m-3 rounded-xl bg-slate-850 border border-slate-800 text-xs">
           <div className="flex items-center gap-1.5 font-semibold text-amber-400 mb-1">
             <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-            <span>SIH Prototype Notice</span>
+            <span>Prototype Notice</span>
           </div>
           <p className="text-[11px] text-slate-400 leading-normal">
             This prototype uses demonstration metrics and local AI pipeline simulation for evaluation purposes.

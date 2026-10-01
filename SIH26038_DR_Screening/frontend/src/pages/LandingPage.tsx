@@ -29,9 +29,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenDemoModal }) => 
           </div>
           <div>
             <span className="font-bold text-white tracking-tight text-xl">RetinaAI</span>
-            <span className="ml-2 text-xs font-semibold uppercase text-medical-400 bg-medical-950 px-2 py-0.5 rounded border border-medical-800">
-              SIH26038
-            </span>
           </div>
         </div>
 
@@ -58,7 +55,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenDemoModal }) => 
         {/* Subheader pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-medical-950/80 border border-medical-700/60 text-xs font-semibold text-medical-300 mx-auto">
           <Sparkles className="w-4 h-4 text-medical-400" />
-          <span>Smart India Hackathon Problem Statement SIH26038</span>
+          <span>AI-Assisted Diabetic Retinopathy Screening</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-tight max-w-4xl mx-auto">
@@ -184,7 +181,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenDemoModal }) => 
 
       {/* Footer */}
       <footer className="px-6 py-6 border-t border-slate-800 text-center text-xs text-slate-500">
-        Smart India Hackathon Prototype — SIH26038 AI-Based Diabetic Retinopathy Screening
+        AI-Based Diabetic Retinopathy Screening Prototype
       </footer>
 
     </div>

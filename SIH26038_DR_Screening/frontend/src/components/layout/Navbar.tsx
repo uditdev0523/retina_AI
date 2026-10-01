@@ -65,9 +65,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-bold text-slate-900 tracking-tight text-lg leading-none">RetinaAI</span>
-                <span className="text-[10px] font-semibold tracking-wider text-medical-600 uppercase bg-medical-50 px-1.5 py-0.5 rounded border border-medical-200">
-                  SIH26038
-                </span>
               </div>
               <span className="text-[11px] text-slate-500 hidden sm:inline-block">AI Diabetic Retinopathy Screening</span>
             </div>

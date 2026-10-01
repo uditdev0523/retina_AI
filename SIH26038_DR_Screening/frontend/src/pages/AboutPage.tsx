@@ -9,7 +9,7 @@ export const AboutPage: React.FC = () => {
       <div className="space-y-2">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-medical-50 text-medical-700 text-xs font-bold border border-medical-200">
           <Sparkles className="w-4 h-4 text-medical-600" />
-          <span>Smart India Hackathon Problem Statement SIH26038</span>
+          <span>Diabetic Retinopathy Screening Platform</span>
         </div>
         <h1 className="text-3xl font-black text-slate-900 tracking-tight">
           AI-Based Diabetic Retinopathy Screening for Rural India

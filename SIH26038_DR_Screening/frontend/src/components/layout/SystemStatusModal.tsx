@@ -27,7 +27,7 @@ export const SystemStatusModal: React.FC<SystemStatusModalProps> = ({ isOpen, on
           <div className="flex items-center gap-2.5">
             <Server className="w-5 h-5 text-emerald-400" />
             <div>
-              <h3 className="font-bold text-base text-white">System Status — SIH26038</h3>
+              <h3 className="font-bold text-base text-white">System Status</h3>
               <p className="text-xs text-slate-400">Real-time status of DR Screening infrastructure</p>
             </div>
           </div>

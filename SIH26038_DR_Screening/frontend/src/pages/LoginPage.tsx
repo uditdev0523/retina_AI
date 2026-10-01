@@ -30,7 +30,7 @@ export const LoginPage: React.FC = () => {
           </div>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-white">RetinaAI Portal Login</h2>
-            <p className="text-xs text-slate-400 mt-1">SIH26038 Rural Ophthalmology Screening Workstation</p>
+            <p className="text-xs text-slate-400 mt-1">Rural Ophthalmology Screening Workstation</p>
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export const LoginPage: React.FC = () => {
 
         {/* Footer */}
         <div className="px-8 py-4 bg-slate-50 border-t border-slate-200 text-center text-[11px] text-slate-400">
-          Smart India Hackathon Prototype — Local Client Mode
+          Prototype — Local Client Mode
         </div>
 
       </div>

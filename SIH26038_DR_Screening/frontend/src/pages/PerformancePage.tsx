@@ -41,7 +41,7 @@ export const PerformancePage: React.FC = () => {
           <div>
             <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
               <Target className="w-5 h-5 text-medical-600" />
-              SIH Problem Statement Target Requirements
+              Screening System Target Requirements
             </h3>
             <p className="text-xs text-slate-500">Target Sensitivity &gt; 90.0% | Target Specificity &gt; 85.0%</p>
           </div>
